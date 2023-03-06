@@ -1,7 +1,6 @@
 package co.edu.jdbc;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,6 +10,7 @@ import java.util.Map;
 
 public class EmpDAO {
 	Connection conn;
+	PreparedStatement psmt;
 	
 	public void connect() {
 		try {
@@ -30,7 +30,7 @@ public class EmpDAO {
 		connect();
 		String sql = "select employee_id,first_name,last_name,salary,department_id,first_name||' '||last_name AS name from employees where employee_id=?";
 		try {
-		PreparedStatement psmt = conn.prepareStatement(sql);
+		psmt = conn.prepareStatement(sql);
 		psmt.setInt(1,empId);
 		ResultSet rs = psmt.executeQuery();
 		if(rs.next()) {
@@ -61,13 +61,13 @@ public int InsertEmpInfo(Map<String, Object> insert){
 		int result = 0;
 		connect();
 		String sql = "insert into employees(employee_id,first_name,last_name,hire_date,job_id,email) values(?,?,?,?,?,?)";
-		try {
-		PreparedStatement psmt = conn.prepareStatement(sql);
-		psmt.setInt(1,(int) insert.get("id"));
+		try {//오류난게 관계키 설정 되 있어서 나는거 였...
+		psmt = conn.prepareStatement(sql);
+		psmt.setString(1, (String) insert.get("id"));
 		psmt.setString(2, (String) insert.get("first"));
 		psmt.setString(3, (String) insert.get("last"));
-		psmt.setDate(4, (Date) insert.get("hire"));
-		psmt.setInt(5, (int) insert.get("job"));
+		psmt.setString(4, (String) insert.get("hire"));
+		psmt.setString(5, (String) insert.get("job"));
 		psmt.setString(6, (String) insert.get("mail"));
 	
 		result = psmt.executeUpdate();
@@ -77,5 +77,7 @@ public int InsertEmpInfo(Map<String, Object> insert){
 		return result;
 }
 	
+
+
 	
 }
